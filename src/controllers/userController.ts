@@ -4,7 +4,7 @@ import { hashPassword } from "../utils/bcrypt";
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { name, email, password, role_id, companyId } = req.body;
+        const { name, email, password, roleId, companyId } = req.body;
         const existingUser = await prisma.user.findUnique({
             where: { email }
         });
@@ -13,7 +13,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
             res.status(400).json({ message: "User with this email already exists." });
             return;
         }
-        if (role_id !== 1) {
+        if (roleId !== 1) {
             if (!companyId) {
                 res.status(400).json({ message: "Company ID is required for non-admin users." });
                 return;
@@ -31,7 +31,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
                 name,
                 email,
                 password: hashedPassword,
-                role_id,
+                roleId,
                 companyId
             },
             select: {
@@ -57,7 +57,7 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
                 id: true,
                 name: true,
                 email: true,
-                role_id: true,
+                roleId: true,
                 companyId: true,
                 createdAt: true
             }
@@ -168,13 +168,22 @@ export const updateUserPassword = async (req: Request, res: Response): Promise<v
 
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { id } = req.params;;
+        const { id } = req.params;
+        const sendUser = (req as any).user;
+        const companyId = sendUser?.companyId;
+        const userRole = sendUser?.roleId;
+
         const userId = Number(id)
         const user = await prisma.user.findUnique({ where: { id: userId } })
         if (!user) {
             res.status(404).json({ message: "User not found" })
             return
         }
+        if (userRole == 2 && user.companyId !== companyId) {
+            res.status(403).json({ message: "You don't have permission to delete this user" })
+            return
+        }
+
         await prisma.user.delete({ where: { id: userId } })
         res.status(200).json({ message: "User deleted successfully" })
     } catch (error) {

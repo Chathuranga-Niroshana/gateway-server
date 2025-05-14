@@ -18,7 +18,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         }
         const payload: any = {
             userId: user.id,
-            role: user.role_id,
+            role: user.roleId,
         };
         if (user.companyId !== null) {
             payload.companyId = user.companyId;
@@ -32,7 +32,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             user: {
                 id: user.id,
                 name: user.name,
-                role: user.role_id,
+                role: user.roleId,
                 companyId: user.companyId ?? null,
                 baseUrl: userCompany?.baseUrl ?? null,
             }

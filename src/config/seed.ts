@@ -31,7 +31,7 @@ async function main() {
                 name: SUPERADMIN_NAME || 'Super Admin',
                 email: SUPERADMIN_EMAIL || 'superadmin@gmail.com',
                 password: hasedPassword,
-                role_id: superAdminRole.id
+                roleId: superAdminRole.id
             }
         })
     }

@@ -18,6 +18,6 @@ router.get('/all', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), getAllUse
 router.get('/one/:id', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), getUserById)
 router.patch('/update/:id', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), updateUser)
 router.patch('/change_password/:id', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.EMPLOYEE]), updateUserPassword)
-router.delete('/delete/:id', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), deleteUser)
+router.delete('/delete/:id', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN, ROLES.ADMIN]), deleteUser)
 
 export default router;
