@@ -4,16 +4,20 @@ import {
     deleteUser,
     getAllUsers,
     getUserById,
-    updateUser
+    updateUser,
+    updateUserPassword
 } from "../controllers/userController";
 import { authMiddleware } from "../middlewares/authMiddleware";
+import { authorizeRole } from "../middlewares/authorizeRole";
+import { ROLES } from "../constants/roles";
 
 const router = Router();
 
-router.post('/create', authMiddleware, createUser)
-router.get('/all', authMiddleware, getAllUsers)
-router.get('/one/:id', authMiddleware, getUserById)
-router.patch('/update/:id', authMiddleware, updateUser)
-router.delete('/delete/:id', authMiddleware, deleteUser)
+router.post('/create', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN, ROLES.ADMIN]), createUser);
+router.get('/all', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), getAllUsers)
+router.get('/one/:id', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), getUserById)
+router.patch('/update/:id', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), updateUser)
+router.patch('/change_password/:id', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.EMPLOYEE]), updateUserPassword)
+router.delete('/delete/:id', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), deleteUser)
 
 export default router;

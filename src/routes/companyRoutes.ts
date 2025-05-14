@@ -1,13 +1,15 @@
 import { Router } from "express";
 import { addCompany, deleteCompany, getAllCompanies, getCompanyById, updateCompany } from "../controllers/companyController";
 import { authMiddleware } from "../middlewares/authMiddleware";
+import { ROLES } from "../constants/roles";
+import { authorizeRole } from "../middlewares/authorizeRole";
 
 const router = Router()
 
-router.post('/create', authMiddleware, addCompany)
-router.get('/all', authMiddleware, getAllCompanies)
-router.get('/one/:id', authMiddleware, getCompanyById)
-router.patch('/update/:id', authMiddleware, updateCompany)
-router.delete('/delete/:id', authMiddleware, deleteCompany)
+router.post('/create', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), addCompany)
+router.get('/all', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), getAllCompanies)
+router.get('/one/:id', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), getCompanyById)
+router.patch('/update/:id', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), updateCompany)
+router.delete('/delete/:id', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), deleteCompany)
 
 export default router;

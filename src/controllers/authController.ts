@@ -31,7 +31,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             user: {
                 id: user.id,
                 name: user.name,
-                role_id: user.role_id,
+                role: user.role_id,
                 companyId: user.companyId ?? null,
             }
         })
