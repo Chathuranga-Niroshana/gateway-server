@@ -24,7 +24,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             payload.companyId = user.companyId;
         }
         const token = generatedToken(payload);
-
+        const companyId = Number(user?.companyId)
+        const userCompany = await prisma.company.findUnique({ where: { id: companyId } });
         res.status(200).json({
             message: "Login Successful",
             authToken: token,
@@ -33,9 +34,9 @@ export const login = async (req: Request, res: Response): Promise<void> => {
                 name: user.name,
                 role: user.role_id,
                 companyId: user.companyId ?? null,
+                baseUrl: userCompany?.baseUrl ?? null,
             }
         })
-
     } catch (error) {
         console.error("Error login in:", error);
         res.status(500).json({ message: "Internal server error" });
