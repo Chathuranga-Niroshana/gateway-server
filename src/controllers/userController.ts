@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../config/prisma";
-import { comparePassword, hashPassword } from "../utils/bcrypt";
+import { hashPassword } from "../utils/bcrypt";
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
     try {
