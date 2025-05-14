@@ -1,12 +1,13 @@
 import { Router } from "express";
 import { addCompany, deleteCompany, getAllCompanies, getCompanyById, updateCompany } from "../controllers/companyController";
+import { authMiddleware } from "../middlewares/authMiddleware";
 
 const router = Router()
 
-router.post('/create', addCompany)
-router.get('/all', getAllCompanies)
-router.get('/one/:id', getCompanyById)
-router.patch('/update/:id', updateCompany)
-router.delete('/delete/:id', deleteCompany)
+router.post('/create', authMiddleware, addCompany)
+router.get('/all', authMiddleware, getAllCompanies)
+router.get('/one/:id', authMiddleware, getCompanyById)
+router.patch('/update/:id', authMiddleware, updateCompany)
+router.delete('/delete/:id', authMiddleware, deleteCompany)
 
 export default router;
