@@ -191,3 +191,117 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
         res.status(500).json({ message: "Internal server error" });
     }
 }
+
+export const getSuperadmin = async (req: Request, res: Response) => {
+    try {
+        const users = await prisma.user.findMany({
+            where: { roleId: 1 },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                createdAt: true,
+            }
+        })
+        res.status(200).send(users)
+    } catch (error) {
+        console.error("Error getting superadmin:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export const getCompanyAdmins = async (req: Request, res: Response) => {
+    try {
+        const users = await prisma.user.findMany({
+            where: { roleId: 2 },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                createdAt: true,
+                company: {
+                    select: {
+                        name: true,
+                        isActive: true,
+                    },
+                },
+            },
+        });
+
+        res.status(200).json(users);
+    } catch (error) {
+        console.error("Error getting admins:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const getCompanyEmployees = async (req: Request, res: Response) => {
+    try {
+        const users = await prisma.user.findMany({
+            where: { roleId: 3 },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                createdAt: true,
+                company: {
+                    select: {
+                        name: true,
+                        isActive: true,
+                    },
+                },
+            },
+        });
+        res.status(200).json(users)
+    } catch (error) {
+        console.error("Error getting employees:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+export const getRecentUsers = async (req: Request, res: Response) => {
+    try {
+        const { number } = req.params
+        const tackNumber = Number(number)
+
+        const users = await prisma.user.findMany({
+            orderBy: {
+                createdAt: 'desc'
+            },
+            take: tackNumber,
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                createdAt: true,
+                company: {
+                    select: {
+                        name: true,
+                    },
+                },
+                role: true
+            }
+        })
+        res.status(200).json(users);
+    } catch (error) {
+        console.error("Error getting recent users:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export const getUserDistributionStatistics = async (req: Request, res: Response) => {
+    try {
+        const superAdminsCount = await prisma.user.count({ where: { roleId: 1 } })
+        const adminsCount = await prisma.user.count({ where: { roleId: 2 } })
+        const employeesCount = await prisma.user.count({ where: { roleId: 3 } })
+
+        const formatData = [
+            { superadmin: superAdminsCount },
+            { admin: adminsCount },
+            { employee: employeesCount }
+        ]
+        res.status(200).json(formatData);
+    } catch (error) {
+        console.error("Error getting user statistics:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}

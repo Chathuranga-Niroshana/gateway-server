@@ -26,6 +26,10 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         const token = generatedToken(payload);
         const companyId = Number(user?.companyId)
         const userCompany = await prisma.company.findUnique({ where: { id: companyId } });
+        if (userCompany && userCompany?.isActive === false) {
+            res.status(401).json({ message: "Company is not active" });
+            return;
+        }
         res.status(200).json({
             message: "Login Successful",
             authToken: token,
