@@ -246,3 +246,26 @@ export const getCompanyStatistics = async (req: Request, res: Response): Promise
         res.status(500).json({ message: 'Internal server error' })
     }
 }
+
+
+export const getCompanyToSelect = async (req: Request, res: Response) => {
+    try {
+        const companies = await prisma.company.findMany({
+            where: { isActive: true },
+            select: {
+                id: true,
+                name: true
+            }
+        })
+        const formatData = companies?.map((company) => (
+            {
+                label: company.name,
+                value: company.id
+            }
+        ))
+        res.status(200).json(formatData)
+    } catch (error) {
+        console.error('Error fetching company statistics:', error)
+        res.status(500).json({ message: 'Internal server error' })
+    }
+}

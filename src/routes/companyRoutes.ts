@@ -6,6 +6,7 @@ import {
     getCompanyById,
     getCompanyGrowthByMonth,
     getCompanyStatistics,
+    getCompanyToSelect,
     updateCompany
 } from "../controllers/companyController";
 import { authMiddleware } from "../middlewares/authMiddleware";
@@ -18,6 +19,7 @@ router.post('/create', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), addCo
 router.get('/all', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), getAllCompanies)
 router.get('/growth', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), getCompanyGrowthByMonth)
 router.get('/statistics', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), getCompanyStatistics)
+router.get('/select', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), getCompanyToSelect)
 router.get('/one/:id', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), getCompanyById)
 router.patch('/update/:id', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), updateCompany)
 router.delete('/delete/:id', authMiddleware, authorizeRole([ROLES.SUPER_ADMIN]), deleteCompany)
