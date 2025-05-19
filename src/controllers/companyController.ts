@@ -46,7 +46,19 @@ export const getCompanyById = async (req: Request, res: Response): Promise<void>
     try {
         const { id } = req.params
         const companyID = Number(id)
-        const company = await prisma.company.findUnique({ where: { id: companyID } })
+        const company = await prisma.company.findUnique({
+            where: { id: companyID },
+            include: {
+                users: {
+                    select: {
+                        id: true,
+                        name: true,
+                        createdAt: true,
+                        role: true
+                    }
+                }
+            }
+        })
         if (!company) {
             res.status(404).json({ message: "Company Not Found" })
         } else {
